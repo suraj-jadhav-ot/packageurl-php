@@ -6,6 +6,15 @@ name: Manual workflow
 # or API.
 on:
   workflow_dispatch:
+  # Inputs the workflow accepts.
+    inputs:
+      release_version:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'Release version'
+        # Input has to be provided for the workflow to run
+        required: true
+        # The data type of the input
+        type: string
 
 jobs:
   build:
@@ -14,17 +23,28 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+        
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: 1.0.0
-          release_name: Release_test
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          tag_name: ${{ github.event.inputs.release_version }}
+          release_name: ${{ github.event.inputs.release_version }}
           draft: false
           prerelease: false
+          
+      - name: 🛎 Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # [!] we need to checkout with tags and commit history
+
+      - name: 📋 Get Commits since last Release
+        id: changes
+        uses: simbo/changes-since-last-release-action@v1
+
+      - name: 📣 Output collected Data
+        run: |
+          echo "Changes since ${{ steps.changes.outputs.last-tag }}:"
+          echo "${{ steps.changes.outputs.log }}"
