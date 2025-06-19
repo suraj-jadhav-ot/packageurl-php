@@ -36,7 +36,7 @@ jobs:
       - name: Show changelog
         run: |
           echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
-          echo "New Tag: ${{ github.event.inputs.release_version }}
+          echo "New Tag: ${{ github.event.inputs.release_version }}"
           echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
 
