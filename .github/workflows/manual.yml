@@ -29,6 +29,10 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0
+
+      - name: Get changelog
+        id: changes
+        uses: simbo/changes-since-last-release-action@v1
         
       - name: Create Release
         id: create_release
@@ -39,13 +43,12 @@ jobs:
           tag_name: ${{ steps.set_version.outputs.RELEASE_VERSION }}
           release_name: ${{ steps.set_version.outputs.RELEASE_VERSION }}
           draft: false
-          prerelease: false      
+          prerelease: false
+          body: |
+            Changes in this Release
+            echo "${{ steps.changes.outputs.log }}"
 
-      - name: Get changelog
-        id: changes
-        uses: simbo/changes-since-last-release-action@v1
-
-      - name: Show changelog
+      - name: Show release details
         run: |
           echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
           echo "New Tag: RELEASE_VERSION"
