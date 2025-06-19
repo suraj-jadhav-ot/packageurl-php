@@ -20,14 +20,12 @@ jobs:
             echo "❌ ERROR: Invalid version format. Must be in X.Y.Z format (e.g., 1.1.3, 2.4.6)"
             exit 1
           fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Version in Output: ${{ steps.validate.outputs.version }}"
 
-      - name: Store build timestamp
-        run: echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
+      - name: Store variable to github env variables # New format
+        run: echo "version=$VERSION" >> $GITHUB_ENV
     
       - name: Deploy using stored timestamp
-        run: echo "Deploying at $BUILD_TIME"
+        run: echo "Deploying at - $VERSION - " ${{ $version }}
           
       - name: Checkout code
         uses: actions/checkout@master
