@@ -46,7 +46,7 @@ jobs:
           prerelease: false
           body: |
             Changes in this Release
-            echo "${{ steps.changes.outputs.log }}"
+            ${{ steps.changes.outputs.log }}
 
       - name: Show release details
         run: |
