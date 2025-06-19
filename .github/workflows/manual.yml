@@ -22,16 +22,10 @@ jobs:
           fi
 
       - name: Store variable to github env variables # New format
-        run: echo "version=$VERSION" >> $GITHUB_ENV
+        run: echo "VERSION=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
     
       - name: Deploy using stored timestamp
-        run: echo "Deploying at - $version - "
-
-      - name: Store build timestamp
-        run: echo "BUILD_TIME=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
-    
-      - name: Deploy using stored timestamp
-        run: echo "Deploying at $BUILD_TIME"
+        run: echo "Deploying at $VERSION"
           
       - name: Checkout code
         uses: actions/checkout@master
@@ -44,8 +38,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.release_version }}
-          release_name: ${{ github.event.inputs.release_version }}
+          tag_name: ${{ steps.set_version.outputs.version }}
+          release_name: ${{ steps.set_version.outputs.version }}
           draft: false
           prerelease: false      
 
@@ -56,6 +50,6 @@ jobs:
       - name: Show changelog
         run: |
           echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
-          echo "New Tag: ${{ github.event.inputs.release_version }}"
+          echo "New Tag: ${{ steps.set_version.outputs.version }}"
           echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
