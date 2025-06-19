@@ -21,6 +21,7 @@ jobs:
             exit 1
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo ${{ $GITHUB_OUTPUT }}
           
       - name: Checkout Code
         uses: actions/checkout@v3
