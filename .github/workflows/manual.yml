@@ -12,23 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validate version format
-        run: |
-          VERSION="${{ github.event.inputs.release_version }}"
-          echo "Checking version format: $VERSION"
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "❌ ERROR: Invalid version format. Must be in X.Y.Z format (e.g., 1.1.3, 2.4.6)"
-            exit 1
-          fi
-          
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@master
         with:
-          fetch-depth: 0  # Required to access tags and commit history
-
+          fetch-depth: 0
+        
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -36,16 +27,17 @@ jobs:
           release_name: ${{ github.event.inputs.release_version }}
           draft: false
           prerelease: false
+          
 
-      - name: Get changelog
+      - name: 📋 Get Commits since last Release
         id: changes
         uses: simbo/changes-since-last-release-action@v1
 
-      - name: Show changelog
+      - name: 📣 Output collected Data
         run: |
-          echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
-          echo "New Tag: ${{ github.event.inputs.release_version }}
-          echo "Commits since last tag:"
+          echo "Changes since ${{ steps.changes.outputs.last-tag }}:"
           echo "${{ steps.changes.outputs.log }}"
+
+          
 
     
