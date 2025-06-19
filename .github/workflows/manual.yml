@@ -29,13 +29,15 @@ jobs:
           prerelease: false
           
 
-      - name: 📋 Get Commits since last Release
-        id: changes
+      - name: Get changelog
+        id: changelogs
         uses: simbo/changes-since-last-release-action@v1
 
-      - name: 📣 Output collected Data
+      - name: Show changelog
         run: |
-          echo "Changes since ${{ steps.changes.outputs.last-tag }}:"
+          echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
+          echo "New Tag: ${{ github.event.inputs.release_version }}
+          echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
 
           
