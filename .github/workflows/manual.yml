@@ -22,6 +22,12 @@ jobs:
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Version in Output: ${{ steps.validate.outputs.version }}"
+
+      - name: Store build timestamp
+        run: echo "BUILD_TIME=$(date +'%T')" >> $GITHUB_ENV
+    
+      - name: Deploy using stored timestamp
+        run: echo "Deploying at $BUILD_TIME"
           
       - name: Checkout code
         uses: actions/checkout@master
