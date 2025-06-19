@@ -21,7 +21,7 @@ jobs:
             exit 1
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo ${{ $GITHUB_OUTPUT }}
+          echo ${{ steps.validate.outputs }}
           
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
       - name: Show changelog
         run: |
           echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
-          echo "New Tag: ${{ steps.validate.outputs.VERSION }}"
+          echo "New Tag: ${{ steps.validate.outputs.version }}
           echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
 
