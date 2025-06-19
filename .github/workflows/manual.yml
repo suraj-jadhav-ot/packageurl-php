@@ -20,6 +20,16 @@ jobs:
             echo "❌ ERROR: Invalid version format. Must be in X.Y.Z format (e.g., 1.1.3, 2.4.6)"
             exit 1
           fi
+          
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          git fetch --tags
+          TAG="${{ steps.set_version.outputs.version }}"
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "❌ Tag '$TAG' already exists!"
+            exit 1
+          fi
 
       - name: Store variable to github env variables # New format
         id: set_version
@@ -44,3 +54,10 @@ jobs:
       - name: Get changelog
         id: changes
         uses: simbo/changes-since-last-release-action@v1
+
+      - name: Show changelog
+        run: |
+          echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
+          echo "New Tag: RELEASE_VERSION"
+          echo "Commits since last tag:"
+          echo "${{ steps.changes.outputs.log }}"
