@@ -26,6 +26,12 @@ jobs:
     
       - name: Deploy using stored timestamp
         run: echo "Deploying at - $version - "
+
+      - name: Store build timestamp
+        run: echo "BUILD_TIME=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
+    
+      - name: Deploy using stored timestamp
+        run: echo "Deploying at $BUILD_TIME"
           
       - name: Checkout code
         uses: actions/checkout@master
