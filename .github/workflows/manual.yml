@@ -1,48 +1,51 @@
-# This is a basic workflow that is manually triggered
-
 name: Manual workflow
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-  # Inputs the workflow accepts.
     inputs:
       release_version:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Release version'
-        # Input has to be provided for the workflow to run
+        description: 'Release version (e.g., 1.1.3)'
         required: true
-        # The data type of the input
-        type: string
 
 jobs:
   build:
     name: Create Release
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
+      - name: Validate version format
+        run: |
+          VERSION="${{ github.event.inputs.release_version }}"
+          echo "Checking version format: $VERSION"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ ERROR: Invalid version format. Must be in X.Y.Z format (e.g., 1.1.3, 2.4.6)"
+            exit 1
+          fi
+          
+      - name: Checkout Code
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-        
+          fetch-depth: 0  # Required to access tags and commit history
+
       - name: Create Release
         id: create_release
-        uses: actions/create-release@latest
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.release_version }}
-          release_name: ${{ github.event.inputs.release_version }}
+          tag_name: ${{ steps.validate.outputs.VERSION }}
+          release_name: ${{ steps.validate.outputs.VERSION }}
           draft: false
           prerelease: false
-          
 
-      - name: 📋 Get Commits since last Release
+      - name: Get changelog
         id: changes
         uses: simbo/changes-since-last-release-action@v1
 
-      - name: 📣 Output collected Data
+      - name: Show changelog
         run: |
-          echo "Changes since ${{ steps.changes.outputs.last-tag }}:"
+          echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
+          echo "New Tag: ${{ steps.validate.outputs.VERSION }}"
+          echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
+
+    
