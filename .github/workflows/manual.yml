@@ -23,12 +23,7 @@ jobs:
 
       - name: Store variable to github env variables # New format
         id: set_version
-        run: |
-          echo "VERSION=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
-          echo "version=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
-    
-      - name: Deploy using stored timestamp
-        run: echo "Deploying at $VERSION"
+        run: echo "version=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
           
       - name: Checkout code
         uses: actions/checkout@master
