@@ -25,7 +25,7 @@ jobs:
         run: echo "version=$VERSION" >> $GITHUB_ENV
     
       - name: Deploy using stored timestamp
-        run: echo "Deploying at - $VERSION - " ${{ $version }}
+        run: echo "Deploying at - $VERSION - "
           
       - name: Checkout code
         uses: actions/checkout@master
