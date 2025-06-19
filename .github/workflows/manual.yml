@@ -24,8 +24,8 @@ jobs:
       - name: Store variable to github env variables # New format
         id: set_version
         run: |
-          echo "RELEASE_VERSION=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
-          echo "release_version=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
+          echo "release_version=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=${{ github.event.inputs.release_version }}" >> $GITHUB_ENV
           
       - name: Checkout code
         uses: actions/checkout@master
@@ -42,8 +42,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.set_version.outputs.RELEASE_VERSION }}
-          release_name: ${{ steps.set_version.outputs.RELEASE_VERSION }}
+          tag_name: ${{ steps.set_version.outputs.release_version }}
+          release_name: ${{ steps.set_version.outputs.release_version }}
           draft: false
           prerelease: false
           body: |
@@ -53,6 +53,6 @@ jobs:
       - name: Show release details
         run: |
           echo "Previous Tag: ${{ steps.changes.outputs.last-tag }}"
-          echo "New Tag: $release_version"
+          echo "New Tag: $RELEASE_VERSION"
           echo "Commits since last tag:"
           echo "${{ steps.changes.outputs.log }}"
