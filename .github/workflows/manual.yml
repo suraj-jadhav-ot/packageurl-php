@@ -29,16 +29,6 @@ jobs:
         uses: actions/checkout@master
         with:
           fetch-depth: 0
-
-      - name: Check if tag already exists
-        id: check_tag
-        run: |
-          git fetch --tags
-          TAG="${{ steps.set_version.outputs.version }}"
-          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "❌ Tag '$TAG' already exists!"
-            exit 1
-          fi
         
       - name: Create Release
         id: create_release
